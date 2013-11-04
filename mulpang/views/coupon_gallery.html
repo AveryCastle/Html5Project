@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>mulPang</title>
+<meta name="description" content="삼성 멀티 캠퍼스 HTML5 강의용 데모 사이트">
+<meta name="keywords" content="html5,css3,svg">
+<link href="css/layout.css" type="text/css" rel="stylesheet" media="all">
+</head>
+
+<body id="today">
+	<a href="#main" id="skipNavi">본문바로가기</a>
+	<div id="page">
+		<header id="header">
+			<hgroup>
+				<h1 class="logo">
+					<img src="image/svg/logo.svg" alt="mulPang">
+				</h1>
+				<h2 class="theme">
+					<img src="image/svg/logo_text.svg" alt="오늘은 뭘 파니?">
+				</h2>
+			</hgroup>
+			<nav id="nav">
+				<h1 class="blind">메인메뉴</h1>
+				<ul>
+					<li class="today"><a href="index.html">오늘</a></li>
+					<li class="near"><a href="coupon_location.html">근처</a></li>
+					<li class="best"><a href="coupon_best.html">추천</a></li>
+					<li class="all"><a href="coupon_all.html">모두</a></li>
+				</ul>
+			</nav>
+			<div id="member_info">
+				<h1 class="blind">로그인</h1>
+				<form id="login" name="login_form" action="#" method="post">
+					<label for="login_id">아이디</label>
+					<input type="text" id="login_id" name="login_id" required>
+					<label for="login_password">비밀번호</label>
+					<input type="password" id="login_password" name="login_password">
+					<input type="submit" value="로그인">
+				</form>
+				<a href="member_join.html" class="member_join">회원가입</a>
+			</div>
+			<div id="cart" class="carton">
+				<h2 class="interest">관심쿠폰</h2>
+				<p class="interest_cnt">2</p>
+				<ul>
+					<li><a href="#"><img src="image/photo/coupon_01.jpg" width="48" height="28" alt="백운냉면"></a></li>
+					<li><a href="#"><img src="image/photo/coupon_03.jpg" width="48" height="28" alt="고려삼계탕"></a></li>
+				</ul>
+			</div>
+		</header>
+		<!-- End of header -->
+		
+		
+		
+		
+		
+		<div id="main">
+			<section id="search">
+				<h1>쿠폰 검색</h1>
+				<form id="coupon_search" name="coupon_search" action="#" method="get">
+					<label for="search_date">기간</label>
+					<select id="search_date" name="search_date">
+						<option value="buyable">구매가능</option>
+						<option value="all">전체</option>
+						<option value="past">지난쿠폰</option>
+					</select>
+					<label for="search_location">지역</label>
+					<select id="search_location" name="search_location">
+						<option value="">전체</option>
+						<option>강남</option>
+						<option>압구정</option>
+						<option>논현</option>
+						<option>홍대</option>
+						<option>신촌</option>
+						<option>기타</option>
+					</select>
+					<label for="search_keyword">키워드</label>
+					<input type="text" id="search_keyword" name="search_keyword">
+					<input type="submit" value="검색">
+				</form>
+			</section>
+			<section id="coupon" class="slide">
+				<h1 class="blind">쿠폰 리스트</h1>
+				<div id="time"><time datetime="2013-11-04">2013.11.04</time></div>
+				<div class="coupon_list">					
+					<!-- 쿠폰 하나당 출력 영역 -->
+					<article class="preview act p1 coupon_off" data-couponid="5" tabindex="0">
+						<h1>백운 냉면</h1>
+						<img class="list_img" src="image/photo/coupon_01.jpg" alt="백운 냉면">
+						<img class="detail_img" src="image/photo/coupon_01_detail.jpg" alt="백운 냉면 상세 이미지" title="자세한 사항은 아래내용 참조">
+						<section class="content">
+							<h1>물냉면</h1>
+							<p class="note">더운여름 물냉면의 세계로 빠져보아요<br></p>
+							<ul class="coupon_info">
+								<li class="cost">정상가격 : <del>15,000원</del></li>
+								<li class="discount">할인가격 : <em>7,500원</em></li>
+								<li class="expire">유효기간 : <time datetime="2012-06-01">2012-07-01</time> 부터 <time datetime="2012-08-31">2012-08-31</time> 까지</li>
+								<li class="remain">잔여수량 : <span>50개</span></li>
+								<li class="term">판매기간 : <span>6월 30 까지</span></li>
+							</ul>
+							<a href="coupon_buy.html" class="buy">구매하기</a>
+						</section>
+						<div class="coupon_tab">
+							<section class="gallery">
+								<h1 tabindex="0">갤러리</h1>
+								<div class="gallery_viewport">
+								</div>
+								<article>
+									<h1>포토 리스트</h1>
+									<ul class="photo_list">
+										<li><a href="image/photo/coupon_sample.png" title=""><img src="image/photo/coupon_sample.png" alt=""></a></li>
+										<li><a href="image/photo/coupon_sample.png" title=""><img src="image/photo/coupon_sample.png" alt=""></a></li>
+										<li><a href="image/photo/coupon_sample.png" title=""><img src="image/photo/coupon_sample.png" alt=""></a></li>
+										<li><a href="image/photo/coupon_sample.png" title=""><img src="image/photo/coupon_sample.png" alt=""></a></li>
+									</ul>
+									<div class="big_photo">
+										<img src="image/photo/coupon_sample.png" width="300" height="250" alt="">
+									</div>
+								</article>
+							</section>
+							<section class="reply tab_off">
+								<h1 tabindex="0">쿠폰 후기 및 평점</h1>
+								<ul>
+									<li>
+										<article>
+											<span>★★★★★</span>
+											<p>정말이예요. 냉면이 너무 시원해요.</p>
+											<footer>
+												<img src="image/member/seulbinim@gmail.com.jpg" alt=""><span>김데레사</span>
+												<time datetime="2013-03-14">2013년 3월 14일</time>
+											</footer>
+										</article>
+									</li>
+									<li>
+										<article>
+											<span>★★★★★</span>
+											<p>정말 맛있어요. 최고예요</p>
+											<footer>
+												<img src="image/member/uzoolove@gmail.com.jpg" alt=""><span>정길용</span>
+												<time datetime="2013-02-20">2013년 2월 20일</time>
+											</footer>
+										</article>
+									</li>
+									<li>
+										<article>
+											<span>★★★★★</span>
+											<p>재방문 의사 100% 입니다. 너무 맛있네요^^</p>
+											<footer>
+												<img src="image/member/test.jpg" alt=""><span>나인환</span>
+												<time datetime="2013-02-28">2013년 2월 28일</time>
+											</footer>
+										</article>
+									</li>
+								</ul>
+							</section>
+							<section class="map tab_off">
+								<h1 tabindex="0">찾아오시는 길</h1>
+								<div class="map_div">Loading....</div>
+								<article>
+									<h1><span class="company_name">백운냉면</span></h1>
+									<div>
+										<dl>
+											<dt>영업점 소개</dt>
+											<dd>
+												<img src="image/shop/shop_sample.png" alt="백운 냉면">
+												<p class="company_desc">강남에 위치한 45년 전통의 냉면집 입니다.</p>
+											</dd>
+											<dt>찾아 오시는길</dt>
+											<dd>
+												강남역 10번 출구나와서 500m 직진 정면에 있음.
+												<button type="button">내 위치 보기</button>
+											</dd>
+											<dt>영업시간</dt>
+											<dd>9:00 부터 23:00 까지</dd>
+											<dt>문의전화 / e-mail</dt>
+											<dd>
+												전화 : <a href="tel:02-123-1234">02-123-1234</a> / e-mail : <a href="mailto:abc@cbc.com">abc@cbc.com</a>
+											</dd>
+										</dl>
+									</div>
+								</article>
+							</section>
+
+						</div>
+						<button type="button" class="btn_add_cart">관심쿠폰등록</button>
+						<button type="button" class="btn_close_coupon_detail">쿠폰 상세 보기 닫기</button>
+					</article>
+					<!-- End of .coupon_article -->
+					<!-- 쿠폰 하나당 출력 영역 -->
+					<article class="detail act p2" data-couponid="6" tabindex="0">
+						<h1>커피통 와플</h1>
+						<img class="list_img" src="image/photo/coupon_02.jpg" alt="커피통 와플 &amp; 아이스크림 SET">
+						<img class="detail_img" src="image/photo/coupon_02_detail.jpg" alt="커피통 와플 상세 이미지" title="자세한 사항은 아래내용 참조">
+						<section class="content">
+							<h1>와플&amp;아이스크림 SET</h1>
+							<p class="note">
+								더운여름 아이스크림과 함께 먹는 와플의 달콤함!<br>
+								저희 커피통에서는 오픈기념 행사로 와플 &amp; 아이스크림 SET를 <br>
+								50% 할인된 가격으로 저렴하게 모십니다.<br>
+								또한 평일 오후 3시 이전 방문 고객이 와플 &amp; 아이스크림 SET를<br>
+								주문하실 경우 아이스 아메리카노를 서비스로 드립니다.^^
+							</p>
+							<ul class="coupon_info">
+								<li class="cost">정상가격 : <del>15,000원</del></li>
+								<li class="discount">할인가격 : <em>7,500원</em></li>
+								<li class="expire">유효기간 : <time datetime="2012-06-01">2012-07-01</time> 부터 <time datetime="2012-08-31">2012-08-31</time> 까지</li>
+								<li class="remain">잔여수량 : <span>50개</span></li>
+								<li class="term">판매기간 : <span>6월 30 까지</span></li>
+							</ul>
+							<a href="coupon_buy.html" class="buy">구매하기</a>
+						</section>
+						<div class="coupon_tab">
+							<section class="gallery">
+								<h1 tabindex="0">갤러리</h1>
+								<div class="gallery_viewport">
+								</div>
+								<article>
+									<h1>포토 리스트</h1>
+									<ul class="photo_list">
+										<li><a href="image/photo/coupon_02_0.jpg" title=""><img src="image/photo/coupon_02_0.jpg" alt=""> </a></li>
+										<li><a href="image/photo/coupon_02_1.jpg" title=""><img src="image/photo/coupon_02_1.jpg" alt=""> </a></li>
+										<li><a href="image/photo/coupon_02_2.jpg" title=""><img src="image/photo/coupon_02_2.jpg" alt=""> </a></li>
+										<li><a href="image/photo/coupon_02_3.jpg" title=""><img src="image/photo/coupon_02_3.jpg" alt=""> </a></li>
+									</ul>
+									<div class="big_photo">
+										<img src="image/photo/coupon_sample.png" width="300" height="250" alt="">
+									</div>
+								</article>
+							</section>
+							<section class="reply tab_off">
+								<h1 tabindex="0">쿠폰 후기 및 평점</h1>
+								<ul>
+									<li>
+										<article>
+											<span>★★★★★</span>
+											<p>정말이예요. 와플이 너무 부드러워요.</p>
+											<footer>
+												<img src="image/member/seulbinim@gmail.com.jpg" alt=""> <span>김데레사</span>
+												<time datetime="2013-01-14">2013년 1월 14일</time>
+											</footer>
+										</article>
+									</li>
+									<li>
+										<article>
+											<span>★★★★★</span>
+											<p>여자친구와 데이트 장소로 딱 좋아요 분위기도 굿~ 맛도 굿~</p>
+											<footer>
+												<img src="image/member/uzoolove@gmail.com.jpg" alt=""> <span>정길용</span>
+												<time datetime="2012-012-20">2012년 12월 20일</time>
+											</footer>
+										</article>
+									</li>
+									<li>
+										<article>
+											<span>★★★★★</span>
+											<p>일산에 이런 맛집이 있다니. 앞으로도 다시 와플먹으러 와야겠어요.</p>
+											<footer>
+												<img src="image/member/test.jpg" alt=""> <span>나인환</span>
+												<time datetime="20123-02-28">2013년2월 28일</time>
+											</footer>
+										</article>
+									</li>
+								</ul>
+							</section>
+							<section class="map tab_off">
+								<h1 tabindex="0">찾아오시는 길</h1>
+								<div class="map_div">Loading....</div>
+								<article>
+									<h1>
+										<span class="company_name">커피통 와플</span>
+									</h1>
+									<div>
+										<dl>
+											<dt>영업점 소개</dt>
+											<dd>
+												<img src="image/shop/shop_02.jpg" alt="cooffee tong">
+												<p class="company_desc">일산에 위치한 분위기 좋은 카페입니다.</p>
+											</dd>
+											<dt>찾아 오시는길</dt>
+											<dd>
+												경기도 고양시 일산동구 정발산동 1178번지
+												<button type="button">내 위치 보기</button>
+											</dd>
+											<dt>영업시간</dt>
+											<dd>9:00 부터 23:00 까지</dd>
+											<dt>문의전화 / e-mail</dt>
+											<dd>
+												전화 : <a href="tel:02-123-1234">02-123-1234</a> / e-mail : <a href="mailto:abc@cbc.com">abc@cbc.com</a>
+											</dd>
+										</dl>
+									</div>
+								</article>
+							</section>
+
+						</div>
+						<button type="button" class="btn_add_cart">관심쿠폰등록</button>
+						<button type="button" class="btn_close_coupon_detail">쿠폰 상세 보기 닫기</button>
+					</article>
+					
+					<!-- End of .coupon_article -->
+				</div>
+			</section>
+			<div id="coupon_control">
+				<button type="button" class="btn_pre">이전</button>
+				<button type="button" class="btn_next">다음</button>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<!-- End of #main_content -->
+		<footer id="footer">
+			<h1 class="logo">
+				<a href="http://www.multicampus.co.kr/index.do"><img src="image/logo.gif" alt="삼성SDS"> </a>
+			</h1>
+			<ul class="menu">
+				<li><a href="http://www.multicampus.co.kr/member/join.do?cmd=privacy1">개인정보 취급방침</a></li>
+				<li><a href="http://www.multicampus.co.kr/member/join.do?cmd=privacy2">회원가입약관</a></li>
+				<li><a href="http://www.multicampus.co.kr/member/join.do?cmd=privacy3">이메일 무단수집 거부</a></li>
+				<li><a href="http://www.multicampus.co.kr/intro.do?cmd=setEducation">교육안내</a></li>
+				<li><a href="#">이메일문의, 사업제휴문의</a></li>
+			</ul>
+			<p class="info">Mulpang㈜ 대표이사 : 김철수, 개인정보 관리 책임자 : 이영희, 사업자등록번호:123-45-6789</p>
+			<address>통신판매업신고증 제○○○○호 주소:서울시 강남구 역삼동 ○○○ 대표번호:123-4567 Fax: 02)123-4567 e-mail:webmaster@mulpang.co.kr</address>
+			<p class="copyright">Copyright&copy; 2013 MULPANG. All right reserved. Contact webmaster for more information</p>
+		</footer>
+	</div>
+</body>
+</html>
