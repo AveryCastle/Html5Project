@@ -15,8 +15,8 @@ app.set('views', __dirname + '/views');
 // app.set('view engine', 'jade'); // 1st modified
 app.set('view engine', 'html');
 app.set('layout', true);
-app.engine('.html', require('jqtpl/lib/express').render);
-//app.engine('.html', require('jqtpl').__express);	// 1st inserted
+app.engine('.html', require('jqtpl/lib/express').render); // express 3.4.4 version or later
+//app.engine('.html', require('jqtpl').__express);	// express 3.3.1 version or less
 //app.locals.layout = true;	//layout.html을 템플릿으로 사용함.
 
 app.use(express.favicon());

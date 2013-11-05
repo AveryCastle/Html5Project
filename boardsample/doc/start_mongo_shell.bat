@@ -1,0 +1,3 @@
+mongo boardsample
+
+pause
