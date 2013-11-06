@@ -67,6 +67,18 @@ var Util = {
 			star += "☆";
 		}
 		return star;
+	},
+	
+	// 가격에 콤마(,) 표시를 추가한다.
+	toCommaPrice : function( num ){
+		if ( typeof num == "number" ){
+			num += "";
+		}
+		var pattern = /(-?[0-9]+)([0-9]{3})/;
+		while(pattern.test(num)) {
+			num = num.replace(pattern,"$1,$2");
+		}
+		return num;
 	}
 };
 

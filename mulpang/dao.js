@@ -40,21 +40,73 @@ Dao.prototype = {
 	// 쿠폰 목록조회(오늘)
 	couponList: function(){
 		var dao = this;
-		console.log(this.params);
+		// 출력할 속성 목록
+		var resultArray = ["couponName", "primeCost", "price", "quantity", "buyQuantity", "saleDate", "useDate", "image", "desc"];
+		var resultAttr = {};
+		for( var item in resultArray ){
+			resultAttr[resultArray[item]] = 1;
+		}
 		
-		db.coupon.find().toArray(function(err, result){
+		// 검색 조건
+		var query = {};
+		
+		db.coupon.find(query, resultAttr).toArray(function(err, result){
+			DaoUtil.objectIdToString(result);
 			dao.callback(err, result);			
 		});		
 	},
 	
 	// 쿠폰 상세 조회
 	couponDetail: function(){
-		
+		var dao = this;
+		//쿠폰 아이디로 쿠폰을 조회한다.
+		db.coupon.findOne({_id: new ObjectId(dao.params._id)}, function(err, coupon){
+			// 쿠폰 업체를 조회한다.
+			db.shop.findOne({_id : coupon.shopId}, function(err, shop){
+				coupon.shop = shop;
+				// 에필로그를 조회한다.
+				db.epilogue.find({couponId: coupon._id}).toArray( function(err, epilogues){
+					coupon.epilogues = epilogues;
+					// view count를 ++1 씩 증가시킨다.
+					db.coupon.update({_id : coupon._id}, {"$inc" : {viewCount : 1}}, function(err){
+						DaoUtil.objectIdToString(coupon);
+						dao.callback(err, coupon);
+					});
+				});
+			});	
+		});
 	},
 	
 	// 쿠폰 구매
-	buyCoupon: function(){		
+	buyCoupon: function(){	
+		console.log(this.params);
 		
+		this.params.regDate = new Date();
+		this.params.couponId = new ObjectId(this.params.couponId);
+		this.params.paymentInfo = {
+			cardType 		: this.params.cardType,
+			cardNumber 		: this.params.cardNumber,
+			cardExpiredDate : this.params.cardExpireYear + this.params.cardExpireMonth,
+			csv 			: this.params.csv,
+			price 			: parseInt(this.params.unitPrice) * parseInt(this.params.quantity)
+		};		
+		
+		delete this.params.cardType;
+		delete this.params.cardNumber;
+		delete this.params.cardExpireYear;
+		delete this.params.cardExpireMonth;
+		delete this.params.csv;
+		delete this.params.unitPrice;
+		
+		var dao = this;
+
+		//구매정보를 등록한다.
+		db.purchase.insert(this.params, function(err, result){
+			// 구매 건수만큼 증가시킨다.
+			db.coupon.update({_id : dao.params.couponId}, {"$inc" : {buyQuantity : parseInt(dao.params.quantity)}}, function(err, updateCount){
+				dao.callback(err, updateCount);
+			});
+		});
 	},
 	
 	// 추천 쿠폰 조회

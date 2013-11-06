@@ -1,11 +1,11 @@
-var page = 2;
-
 // 페이지 로딩 후 호출되는 함수 지정
 $(function(){
-	setDetailEvent();
-	setSlideEvent();
+	// 오늘 날짜 세팅
+	$("#time > time").attr("datetime", Util.dateToString("-")).text(Util.dateToString("-"));
 	
 	getCouponList();
+	
+	setSlideEvent();
 });
 
 // 쿠폰 상세보기 이벤트와 상세보기 닫기 이벤트를 추가한다.
@@ -34,22 +34,47 @@ function setDetailEvent(){
 }
 
 // 쿠폰 상세 정보를 보여준다.
-function couponDetail( coupon ){
-	detailSlide(coupon);
+function couponDetail( coupon, forBuy ){
+	// 상세 정보가 비어있을 경우 서버에서 가져온다.
+	if(coupon.children(".coupon_tab").size() == 0){
+		var params = {
+				cmd: "couponDetail",
+				_id: coupon.attr("data-couponid")
+			};
+			
+			$.ajax({
+				url : "request",
+				data : params,
+				type : "get",
+				dataType : "json",
+				success : function(data){
+					console.log(data);
+					coupon.children(".content").after($("#tmpl_coupon_detail").tmpl(data));
+					// 상세보기 호출 시 탭 이벤트를 추가한다.
+					setTabEvent(coupon);
+					// 쿠폰 구매이벤트를 추가한다.
+					setBuyEvent(coupon);
+					
+					if(forBuy){	// 구매하기 용도
+						showBuyForm(coupon);
+					}else{ // 상세보기 용도
+						hideBuyForm(coupon);
+					}
+				}
+			});		
+	}
 	
-	// 상세보기 호출 시 탭 이벤트를 추가한다.
-	setTabEvent(coupon);
+//	// 상세보기 상태일 경우 구매화면을 숨긴다.
+	hideBuyForm(coupon);
+	detailSlide(coupon);
 }
 
 // 쿠폰 상세보기 스타일로 전환한다.
 function detailSlide(coupon){
-	if( coupon.hasClass('preview') ){
-		coupon.removeClass('preview').addClass('detail');
-	}else if( coupon.hasClass('detail') ){
-		coupon.removeClass('detail').addClass('preview');
-	}
+	coupon.removeClass('preview').addClass('detail');
 	// 상세보기 애니메이션이 끝난 후(0.5초 후) 쿠폰 목록을 숨김 처리한다.
 	setTimeout("$('.coupon_list > article.preview.act').addClass('coupon_off')", 500);
+
 }
 
 
@@ -152,17 +177,102 @@ function getCouponList(){
 			var couponList = $("#tmpl_coupon_list").tmpl(data);
 			$("div.coupon_list").empty().append(couponList);
 			
-			sliding();
+			var couponSizeOfLastPage = couponList.size() % 5;
+			if(couponList.size() == 0 || couponSizeOfLastPage > 0){
+				for(var i=couponSizeOfLastPage; i<5; i++){
+					$('<article class="preview no_content">')
+						.append("<h1>등록된 상품이 없습니다.</h1>")
+						.appendTo(".coupon_list");
+				}
+			}
 			
+			page = 1;
+			setDetailEvent();
+			// 구매하기 버튼 클릭 이벤트를 추가한다.
+			setBuyFormEvent();
+			// 쿠폰 구매이벤트를 추가한다.
+			//setBuyEvent(coupon);
+			
+			sliding();			
+		},
+		error : function(jqXHR, error, errorThrown) {  
+		            if(jqXHR.status && jqXHR.status == 400){
+		                 alert(jqXHR.responseText); 
+		            }else{
+		                alert("Something went wrong");
+		            }
+		}
+	});
+}
+
+// 구매버튼 클릭 이벤트를 등록한다.
+function setBuyFormEvent(){
+	$(".buy").unbind().click(function(e){
+		// 기본동작(하이퍼 링크)하지 못 하도록 한다.
+		e.preventDefault();
+		
+		var coupon = $(e.target).parents("article");
+		if( coupon.children(".coupon_tab").size() == 0){ 
+			// 상세보기 클릭 이전에 목록에서 바로 구매버튼 클릭할 경우
+			couponDetail(coupon, true);
+		}else{ 
+			// 상세 정보를 출력한 후 다시 목록으로 왔을 때 구매 버튼을 누르면 상세화면으로 바꾼 후 구매화면을 보여준다.
+			detailSlide(coupon);
+			if( coupon.children(".buy_section").css("display") == "none" ){
+				showBuyForm(coupon);
+			}
 		}
 	});
 }
 
 
+// 구매화면을 보여준다.(구매하기 화면일 경우)
+function showBuyForm(coupon){
+	coupon.children(".coupon_tab").hide().next().show();
+}
 
 
+// 구매화면을 숨긴다. (상세화면일 경우)
+function hideBuyForm(coupon){
+	coupon.children(".coupon_tab").show().next().hide();
+}
 
+// 구매수량을 수정했을 때 결제가격을 다시 계산한다.
+function setPrice(element, price){
+	$(element).parents(".buy_section").find("output").text(Util.toCommaPrice( $(element).val() * price) );
+}
 
+// 구매하기
+function setBuyEvent(coupon){
+	coupon.find("form").submit(function(e){
+		var params = $(this).serialize();
+
+		$.ajax({
+			url : "request",
+			data : params,
+			type : "get",
+			dataType : "json",
+			success : function(data){
+				if( data == 1 ){
+					alert("쿠폰 구매가 완료되었습니다.");
+				}else{
+					alert("쿠폰 구매에 실패했습니다.");
+				}
+				window.location.reload();
+			},
+			error : function(jqXHR, error, errorThrown) {  
+	            if(jqXHR.status && jqXHR.status == 400){
+	                 alert(jqXHR.responseText); 
+	            }else{
+	                alert("Something went wrong");
+	            }
+			}
+		});
+		
+		// form 의 기본동작  submit을 막는다.
+		return false;
+	});
+}
 
 
 

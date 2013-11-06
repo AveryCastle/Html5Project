@@ -50,6 +50,8 @@ exports.request = function(req, res){
 		params = req.body;
 	}
 	
+	//clog.info("[router]", util.inspect(params));
+	
 	var cmd = params.cmd;
 	delete params.cmd;
 	

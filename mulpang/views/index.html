@@ -21,7 +21,7 @@
 			<label for="search_keyword">키워드</label>
 			<input type="text" id="search_keyword" name="search_keyword">
 			<input type="submit" value="검색">
-		</form>
+		</form>s
 	</section>
 	<section id="coupon" class="slide">
 		<h1 class="blind">쿠폰 리스트</h1>
@@ -44,117 +44,165 @@
 <!-- 실제로 브라우저가 처리하지는 않는 부분이다.(javascript도 html 도 아닌 것으로 인식한다) -->
 <script type="text/x-jquery-tmpl" id="tmpl_coupon_list">
 
+<article class="preview" data-couponid="{%= _id %}" tabindex="0">
 <!-- 쿠폰 하나당 출력 영역 -->
-<article class="preview" data-couponid="6" tabindex="0">
-	<h1>커피통 와플</h1>
+	<h1>{%= couponName %}</h1>
 	<img class="list_img" src="image/{%= image.main.file %}" alt="{%= image.main.desc %}">
-	<img class="detail_img" src="image/photo/coupon_02_detail.jpg" alt="커피통 와플 상세 이미지" title="자세한 사항은 아래내용 참조">
+	<img class="detail_img" src="image/{%= image.detail.file %}"" alt="{%= image.detail.desc %}" title="자세한 사항은 아래내용 참조">
 	<section class="content">
-		<h1>와플&amp;아이스크림 SET</h1>
+		<h1>{%= couponName %}</h1>
 		<p class="note">
-			더운여름 아이스크림과 함께 먹는 와플의 달콤함!<br>
-			저희 커피통에서는 오픈기념 행사로 와플 &amp; 아이스크림 SET를 <br>
-			50% 할인된 가격으로 저렴하게 모십니다.<br>
-			또한 평일 오후 3시 이전 방문 고객이 와플 &amp; 아이스크림 SET를<br>
-			주문하실 경우 아이스 아메리카노를 서비스로 드립니다.^^
+			{%= desc %}
 		</p>
 		<ul class="coupon_info">
-			<li class="cost">정상가격 : <del>15,000원</del></li>
-			<li class="discount">할인가격 : <em>7,500원</em></li>
-			<li class="expire">유효기간 : <time datetime="2012-06-01">2012-07-01</time> 부터 <time datetime="2012-08-31">2012-08-31</time> 까지</li>
-			<li class="remain">잔여수량 : <span>50개</span></li>
-			<li class="term">판매기간 : <span>6월 30 까지</span></li>
+			<li class="cost">정상가격 : <del>{%= Util.toCommaPrice(primeCost) %}원</del></li>
+			<li class="discount">할인가격 : <em>{%= Util.toCommaPrice(price) %}원</em></li>
+			<li class="expire">유효기간 : <time datetime="{%= Util.dateToYYYYMMDD(useDate.start) %}">{%= Util.dateToYYYYMMDD(useDate.start) %}</time> 부터 <time datetime="{%= Util.dateToYYYYMMDD(useDate.finish) %}">{%= Util.dateToYYYYMMDD(useDate.finish) %}</time> 까지</li>
+			<li class="remain">잔여수량 : <span>{%= quantity - buyQuantity %}개</span></li>
+			<li class="term">판매기간 : <span>{%= Util.dateToYYYYMMDD(saleDate.finish) %}까지</span></li>
 		</ul>
 		<a href="coupon_buy.html" class="buy">구매하기</a>
 	</section>
-	<div class="coupon_tab">
-		<section class="gallery">
-			<h1 tabindex="0">갤러리</h1>
-			<div class="gallery_viewport">
-				<!-- 동영상 재생 영역 -->
-			</div>
-			<article>
-				<h1>포토 리스트</h1>
-				<ul class="photo_list">
-					<li><a href="image/photo/coupon_02_0.jpg" title=""><img src="image/photo/coupon_02_0.jpg" alt=""> </a></li>
-					<li><a href="image/photo/coupon_02_1.jpg" title=""><img src="image/photo/coupon_02_1.jpg" alt=""> </a></li>
-					<li><a href="image/photo/coupon_02_2.jpg" title=""><img src="image/photo/coupon_02_2.jpg" alt=""> </a></li>
-					<li><a href="image/photo/coupon_02_3.jpg" title=""><img src="image/photo/coupon_02_3.jpg" alt=""> </a></li>
-				</ul>
-				<div class="big_photo">
-					<img src="image/photo/coupon_sample.png" width="300" height="250" alt="">
-				</div>
-			</article>
-		</section>
-		<section class="reply tab_off">
-			<h1 tabindex="0">쿠폰 후기 및 평점</h1>
-			<ul>
-				<li>
-					<article>
-						<span>★★★★★</span>
-						<p>정말이예요. 와플이 너무 부드러워요.</p>
-						<footer>
-							<img src="image/member/seulbinim@gmail.com.jpg" alt=""> <span>김데레사</span>
-							<time datetime="2013-01-14">2013년 1월 14일</time>
-						</footer>
-					</article>
-				</li>
-				<li>
-					<article>
-						<span>★★★★★</span>
-						<p>여자친구와 데이트 장소로 딱 좋아요 분위기도 굿~ 맛도 굿~</p>
-						<footer>
-							<img src="image/member/uzoolove@gmail.com.jpg" alt=""> <span>정길용</span>
-							<time datetime="2012-012-20">2012년 12월 20일</time>
-						</footer>
-					</article>
-				</li>
-				<li>
-					<article>
-						<span>★★★★★</span>
-						<p>일산에 이런 맛집이 있다니. 앞으로도 다시 와플먹으러 와야겠어요.</p>
-						<footer>
-							<img src="image/member/test.jpg" alt=""> <span>나인환</span>
-							<time datetime="20123-02-28">2013년2월 28일</time>
-						</footer>
-					</article>
-				</li>
-			</ul>
-		</section>
-		<section class="map tab_off">
-			<h1 tabindex="0">찾아오시는 길</h1>
-			<div class="map_div">Loading....</div>
-			<article>
-				<h1>
-					<span class="company_name">커피통 와플</span>
-				</h1>
-				<div>
-					<dl>
-						<dt>영업점 소개</dt>
-						<dd>
-							<img src="image/shop/shop_02.jpg" alt="cooffee tong">
-							<p class="company_desc">일산에 위치한 분위기 좋은 카페입니다.</p>
-						</dd>
-						<dt>찾아 오시는길</dt>
-						<dd>
-							경기도 고양시 일산동구 정발산동 1178번지
-							<button type="button">내 위치 보기</button>
-						</dd>
-						<dt>영업시간</dt>
-						<dd>9:00 부터 23:00 까지</dd>
-						<dt>문의전화 / e-mail</dt>
-						<dd>
-							전화 : <a href="tel:02-123-1234">02-123-1234</a> / e-mail : <a href="mailto:abc@cbc.com">abc@cbc.com</a>
-						</dd>
-					</dl>
-				</div>
-			</article>
-		</section>
-
-	</div>
+	
 	<button type="button" class="btn_add_cart">관심쿠폰등록</button>
 	<button type="button" class="btn_close_coupon_detail">쿠폰 상세 보기 닫기</button>
-</article>
 <!-- End of .coupon_article -->
+</article>
+
+</script>
+
+
+
+<script type="text/x-jquery-tmpl" id="tmpl_coupon_detail">
+<div class="coupon_tab">
+	<section class="gallery">
+		<h1 tabindex="0">갤러리</h1>
+		<div class="gallery_viewport">
+			<!-- 동영상 재생 영역 -->
+			{%if video%}
+			<video preload="none" src="video/{%= video.src %}" poster="video/{%= video.poster %}" controls></video>
+			{%/if%}
+		</div>
+		<article>
+			<h1>포토 리스트</h1>
+			<ul class="photo_list">
+				{%each(i,value) image.etc%}
+				<li><a href="image/{%= value.file %}" title="{%= value.desc %}"><img src="image/{%= value.file %}" alt="{%= value.desc %}"></a></li>
+				{%/each%}
+			</ul>
+			<div class="big_photo">
+				{%if image.etc.length >0%}
+				<img src="image/{%= image.etc[0].file %}" width="300" height="250" alt="">
+				{%/if%}
+			</div>
+		</article>
+	</section>
+	<section class="reply tab_off">
+		<h1 tabindex="0">쿠폰 후기 및 평점</h1>
+		<ul>
+			{%each(i,value) epilogues%}
+			<li>
+				<article>
+					<span>{%= value.satisfaction %}</span>
+					<p>{%= value.content %}</p>
+					<footer>
+						<img src="image/member/{%= value.writer %}.jpg" alt="{%= value.writer %} 프로필 이미지"> <span>{%= value.writer %}</span>
+						<time datetime="{%= Util.dateToString('-',value.regDate) %}">{%= Util.dateToString('.',value.regDate) %}</time>
+					</footer>
+				</article>
+			</li>
+			{%/each%}
+		</ul>
+	</section>
+	<section class="map tab_off">
+		<h1 tabindex="0">찾아오시는 길</h1>
+		<div class="map_div">Loading....</div>
+		<article class="shop" data-lat="{%= shop.position.lst %}" data-lng="{%= shop.position.lst %}">
+			<h1>
+				<span class="company_name">{%= shop.shopName %}</span>
+			</h1>
+			<div>
+				<dl>
+					<dt>영업점 소개</dt>
+					<dd>
+						<img src="image/{%= shop.picture.file %}" alt="{%= shop.picture.desc %}">
+						<p class="company_desc">{%= shopDesc %}</p>
+					</dd>
+					<dt>찾아 오시는길</dt>
+					<dd>
+						{%= shop.directions %}
+						<button type="button">내 위치 보기</button>
+					</dd>
+					<dt>영업시간</dt>
+					<dd>{%= shop.officeHours.open %}부터 {%= shop.officeHours.close %} 까지</dd>
+					<dt>문의전화 / e-mail</dt>
+					<dd>
+						전화 : <a href="tel:{%= shop.tel %}">{%= shop.tel %}</a> / e-mail : <a href="mailto:{%= shop.email %}">{%= shop.email %}</a>
+					</dd>
+				</dl>
+			</div>
+		</article>
+	</section>
+</div>
+
+
+<div class="buy_section">
+	<form name="buy_form" action="#" method="post">	
+		<input type="hidden" name="couponId" value="{%= _id %}">
+		<input type="hidden" name="cmd" value="buyCoupon">
+		<input type="hidden" name="unitPrice" value="{%= price %}">				
+		<h1>{%= couponName %}</h1>
+		<table class="table_buy_form">
+			<tr>
+				<th><label for="buyQuantity">구매수량</label></th>
+				<td class="number_td"><input type="number" nin="1" max="{%= quantity - buyQuantity %}" name="quantity" value="1" required oninput="setPrice(this,{%= price %})"></td>
+			</tr>
+			<tr>
+				<th>결제가격</th>
+				<td class="number_td"><output name="total_price">{%= Util.toCommaPrice(price) %}</output> 원</td>
+			</tr>
+			<tr>
+				<th><label for="cardtype">카드종류</label></th>
+				<td>
+					<select name="cardType">
+						<option value="110">국민카드</option>
+						<option value="210">외환카드</option>
+						<option value="310">BC카드</option>
+						<option value="510">삼성카드</option>
+						<option value="810">신한카드</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="cardNumber">카드번호</label></th>
+				<td><input type="text" name="cardNumber" maxlength="16" pattern="^\d{16}$"></td>		
+			</tr>
+			<tr>
+				<th><label>카드 유효 기간</label></th>
+				<td><input type="number" name="cardExpireMonth" min="1" max="12" title="유효기간 월" required="required"> / <input type="number" name="cardExpireYear" title="유효기간 년" required="required">(MM / YYYYY)</td>
+				<!--<td><input type="date" name="expiredDate" /></td>-->
+				
+			</tr>
+			<tr>
+				<th><label for="csv">CSV코드</label></th>
+				<td><input type="text" name="csv" pattern="^\d{3}$" maxlength="3"  placeholder="카드 뒷면의 숫자 3자리" required="required"></td>
+			</tr>
+			<!-- 비회원 시 -->
+			<input type="hidden" name="isMember" value="false">
+			<tr>
+				<th><label for="email">구매자 email</label></th>
+				<td><input type="email" name="email" required="required"></td>
+			</tr>
+			<tr>
+				<th><label for="password">구매 비밀번호</label></th>
+				<td><input type="password" name="password" maxlength="13" required="required"></td>
+			</tr>
+			<!-- 비회원시 만 출력 -->
+		</table>
+		<div class="div_btn">
+			<button type="submit" class="btn_buy">구매하기</button>
+		</div>
+	</form>
+</div>
 
 </script>
