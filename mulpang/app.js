@@ -34,9 +34,19 @@ app.get('/coupon_best.html', routes.best);
 app.get('/coupon_location.html', routes.location);
 app.get('/coupon_all.html', routes.all);
 app.get('/*.html', routes.forward);
-app.get('/request', routes.request);
+//app.get('/request', routes.request);
+app.get('/request', function(req,res){
+	// soket.io 객체를 response에 지정한다.
+	res.io = io;
+	routes.request(req,res);
+});
 
-
-http.createServer(app).listen(app.get('port'), function() {
+//http.createServer(app).listen(app.get('port'), function() {
+//	console.log('Express server listening on port ' + app.get('port'));
+//});
+var httpServer = http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
 });
+
+// socket.io 서버 구동
+var io = require("socket.io").listen(httpServer);

@@ -847,7 +847,7 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	border: #6d5d4f solid 2px;
-	padding: 20px 20px 20px 650px;
+	padding: 15px 20px 20px 640px;
 	cursor: pointer;
 	transition: all 0.5s;
 }
@@ -870,7 +870,7 @@
 	-webkit-mask-box-image: url(svg/button_mask.svg);
 }
 .list .preview .content {/*쿠폰 상세내용 설명 영역*/
-	width: 326px;
+	width: 315px;
 }
 .list .preview .content>h1 {
 	position: absolute;
@@ -884,7 +884,7 @@
 	display: none;
 }
 .list .preview .content .coupon_info {/*쿠폰정보*/
-	margin-left: 20px;
+	margin-left: 5px;
 }
 .list .preview .content .coupon_info li {
 	line-height: 22px;
@@ -892,6 +892,15 @@
 	color: #6d8bb1;
 	padding-left: 22px;
 }
+
+.list .preview .content .coupon_info li:last-child {
+	line-height: 22px;
+	background: url(svg/coupon_count.svg) 0 3px no-repeat;
+	color: #6d8bb1;
+	padding-left: 22px;
+	margin-right: 90px;
+}
+
 .list .preview .content .coupon_info .normal_cost_li {/*기준가격*/
 	font-style: normal;
 }

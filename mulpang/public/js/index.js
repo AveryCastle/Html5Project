@@ -1,5 +1,9 @@
 // 페이지 로딩 후 호출되는 함수 지정
 $(function(){
+	if($("body").attr("id") == "all"){
+		$("#coupon").attr("class","list");
+	}
+	
 	// 오늘 날짜 세팅
 	$("#time > time").attr("datetime", Util.dateToString("-")).text(Util.dateToString("-"));
 	

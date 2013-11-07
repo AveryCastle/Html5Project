@@ -41,8 +41,15 @@ Dao.prototype = {
 	couponList: function(){
 		var dao = this;
 		// 출력할 속성 목록
-		var resultArray = ["couponName", "primeCost", "price", "quantity", "buyQuantity", "saleDate", "useDate", "image", "desc"];
+		var resultArray = [];
+		
+		if(this.params.resultAttr){
+			resultArray = this.params.reusltAttr;
+		}else{
+			resultArray = ["couponName", "primeCost", "price", "quantity", "buyQuantity", "saleDate", "useDate", "image", "desc"];
+		}
 		var resultAttr = {};
+		
 		for( var item in resultArray ){
 			resultAttr[resultArray[item]] = 1;
 		}
@@ -69,6 +76,12 @@ Dao.prototype = {
 					coupon.epilogues = epilogues;
 					// view count를 ++1 씩 증가시킨다.
 					db.coupon.update({_id : coupon._id}, {"$inc" : {viewCount : 1}}, function(err){
+						// web soket으로 수정된 조회수 top5를 전송한다.
+						dao.topCoupon("viewCount", function(err, result){
+							// web socket으로 접속되어 있는 모든 클라이언트에게 메세지를 전송한다.
+							dao.res.io.sockets.emit("websocketAnswer", result);
+						});
+						
 						DaoUtil.objectIdToString(coupon);
 						dao.callback(err, coupon);
 					});
@@ -111,7 +124,34 @@ Dao.prototype = {
 	
 	// 추천 쿠폰 조회
 	topCoupon: function(condition, callback){
+		var dao = this;
 		
+		// 검색조건
+		if(!condition){ // dao에서 직접 호출할 경우 condition 파라미터를 넘긴다.
+			condition = dao.params.condition;
+		}
+		
+		// 정렬방식
+		// viewCount로 오름차순, buyQuantity로 내림차순 정렬
+		// var orderBy = { viewCount: 1, buyQuantity: -1 };
+		var orderBy = {};
+		orderBy[condition] = -1;
+		
+		// 출력할 속성
+		var resultAttr = {couponName : 1};
+		resultAttr[condition] = 1;
+		clog(resultAttr);
+		
+		// MongoDB가 알아서 정렬시킨 후 최상위 5개를 꺼내옴
+		db.coupon.find({}, resultAttr).limit(5).sort(orderBy).toArray(function(err, result){
+			DaoUtil.objectIdToString(result);
+			clog.log(result);
+			if(callback){ // dao에서 직접 호출했을 경우
+				callback(err, result);
+			}else{
+				dao.callback(err, result);
+			}
+		});
 	},
 	
 	// 지정한 쿠폰 아이디 목록을 받아서 남은 수량을 넘겨준다.

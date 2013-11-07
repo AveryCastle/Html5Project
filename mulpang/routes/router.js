@@ -28,9 +28,10 @@ exports.best = function(req, res) {
 };
 
 exports.all = function(req, res) {
-	res.render('coupon_all', {
+	res.render('index', {
 		pageId : 'all',
-		layout : false
+		js		: 'index.js'
+		//layout : false
 	});
 };
 
@@ -50,7 +51,7 @@ exports.request = function(req, res){
 		params = req.body;
 	}
 	
-	//clog.info("[router]", util.inspect(params));
+	clog.info("[router]", util.inspect(params));
 	
 	var cmd = params.cmd;
 	delete params.cmd;
