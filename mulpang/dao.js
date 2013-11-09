@@ -154,34 +154,184 @@ Dao.prototype = {
 		});
 	},
 	
-	// 지정한 쿠폰 아이디 목록을 받아서 남은 수량을 넘겨준다.
+	// 지정한 쿠폰 아이디 목록을 받아서 남은 수량을 넘겨준다.(Polling방식 : Client가 주기적으로 Server에 요청하고 응답 받는 방식)
 	couponQuantity: function(){
+		// 쿠폰 목록이 ","를 구분자로 하나의 문자열로 전달되므로 ","를 기준으로 자른다.
+		var idArray = this.params.couponIdList.split(",");
+		var idObjArray = [];
+		for(var i=0; i<idArray.length; i++){
+			idObjArray.push(new ObjectId(idArray[i]));
+		}
 		
+		var dao = this;
+		// 쿠폰아이디 배열에 포함된 쿠폰을 조회한다. 
+		db.coupon.find({_id: {"$in": idObjArray}}, {quantity: 1, buyQuantity: 1, couponName: 1}).toArray(function(err, list){
+			DaoUtil.objectIdToString(list);
+			
+			// Server-Sent Events 형식의 응답 헤더 설정
+			dao.res.contentType("text/event-stream");
+			dao.res.write('data: ' + JSON.stringify(list));
+			dao.res.write("\n\n");
+			dao.res.write("retry: " + 1000*10);
+			dao.res.write("\n");
+			dao.res.end();
+		});
 	},
-	
+
 	// 회원 가입
 	registMember: function(){
+		// 임시로 저장한 프로필 이미지를 실제 이미지로 변경한다.
+		var tmpDir = __dirname + "/public/tmp/";
+		var tmpFileName = this.params.tmpFileName;
+		var profileDir = __dirname + "/public/image/member/";		
+		var profileFileName = this.params._id + "." + tmpFileName.split(".")[1];	// 이메일.이미지확장자
+		this.params.profileImage = "member/" + profileFileName;	// DB에 등록할 프로필이미지를 지정한다.
 		
+		delete this.params.tmpFileName;
+		
+		this.params.regDate = new Date();
+		var dao = this;
+		db.member.insert(this.params, function(err, member){
+			if(err){
+				console.log(err.result.code);
+			}
+			
+			if(err && err.result.code == 11000){	// 아이디 중복일 경우 발생하는 에러
+				var errMsg = {
+					err: err.result.code,
+					msg: dao.params._id + "는 이미 등록된 이메일 입니다."
+				};
+				dao.callback(null, errMsg);	// router에서 에러가 있으면 응답하지 않으므로 null로 세팅
+			}else{
+				// 임시 이미지를 실제 경로에 이미지로 변경
+				fs.rename(tmpDir + tmpFileName, profileDir + profileFileName, function(err){
+					dao.callback(err, member);
+				});
+			}
+		});
 	},
 	
 	// 로그인 처리
 	login: function(){
-		
+		var dao = this;
+		// 지정한 아이디와 비밀번호로 회원을 조회한다.
+		db.member.findOne(this.params, {_id: 1, profileImage: 1}, function(err, member){
+			if(member){
+				dao.callback(err, member);
+			}else{
+				var errMsg = {
+					err: "아이디 비번 오류",
+					msg: "아이디와 비밀번호를 확인하시기 바랍니다."
+				};
+				dao.callback(null, errMsg);
+			}
+		});
 	},
 	
 	// 회원 정보 조회
 	getMember: function(){		
-		
+		this.params._id = this.req.session.userId;
+		var dao = this;
+		if(this.params._id == undefined){	// 세션에 아이디가 없을 경우
+			var err = {result: {err: "에러", msg: "로그인이 필요한 서비스입니다."}};
+			dao.callback(err);
+		}else{			
+			// 회원 정보를 가져온다.
+			db.member.findOne(this.params, {_id: 1, profileImage: 1}, function(err, member){
+				var query = {email: dao.params._id};
+				var resultAttr = {_id: 0, couponId: 1};
+				var orderBy = {regDate: -1};
+				
+				// 회원의 구매 정보를 가져온다.
+				db.purchase.find(query, resultAttr).sort(orderBy).toArray(function(err, couponList){					
+					var couponIdArray = [];
+					for(var i=0; i<couponList.length; i++){
+						couponIdArray.push(couponList[i].couponId);
+					}
+
+					// 구매한 쿠폰 정보를 가져온다.
+					db.coupon.find({_id: {"$in": couponIdArray}}, {couponName: 1, image: 1, regDate: 1}).toArray(function(err, couponList){
+						
+						// 해당 회원이 구매한 쿠폰의 후기 정보를 가져온다.
+						db.epilogue.find({couponId: {"$in": couponIdArray}, writer: member._id}, {couponId: 1, content: 1, satisfaction: 1, regDate: 1}).toArray(function(err, epilogueList){
+							DaoUtil.objectIdToString(couponList);
+							
+							// 쿠폰 정보에 후기 정보를 추가한다.
+							while(epilogue = epilogueList.shift()){
+								for(var i=0; i<couponList.length; i++){
+									if(couponList[i]._id == epilogue.couponId.toString()){										
+										couponList[i].epilogue = epilogue;
+										break;
+									}
+								}
+							}							
+							member.coupon = couponList;
+							
+							dao.callback(err, member);
+						});
+					});
+				});
+			});
+		}
 	},
 	
 	// 회원 정보 수정
 	updateMember: function(){		
+		var oldPassword = this.params.oldPassword;	// 이전 비밀번호	
+		delete this.params.oldPassword;
 		
+		var dao = this;
+		
+		if(this.params._id == undefined){	// 세션에 아이디가 없을 경우
+			var err = {result: {err: "에러", msg: "로그인이 필요한 서비스입니다."}};
+			dao.callback(err);
+		}else{	
+			// 이전 비밀번호로 회원 정보를 조회한다.
+			db.member.findOne({_id: this.params._id, password: oldPassword}, function(err, member){
+				if(!member){	// 회원 정보가 조회되지 않을 경우
+					var err = {err: "에러", msg: "비밀번호가 맞지 않습니다."};
+					dao.callback(null, err);
+				}else{
+					if(dao.params.password.trim() != ""){	// 패스워드를 변경할 경우
+						member.password = dao.params.password;
+					}
+					
+					if(dao.params.tmpFileName){	// 프로필 이미지를 변경할 경우
+						// 임시로 저장한 프로필 이미지를 실제 이미지로 변경한다.
+						var tmpDir = __dirname + "/public/tmp/";
+						var tmpFileName = dao.params.tmpFileName;
+						var profileDir = __dirname + "/public/image/member/";						
+						var profileFileName = dao.params._id + "." + tmpFileName.split(".")[1];	// 이메일.이미지확장자	
+							
+						// 임시 이미지를 실제 경로에 이미지로 변경
+						fs.rename(tmpDir + tmpFileName, profileDir + profileFileName);
+						member.profileImage = "member/" + profileFileName;
+					}
+					
+					// 회원 정보를 수정한다.
+					db.member.update({_id: member._id}, member, function(err, result){
+						// 세션에 프로필 이미지 경로를 저장한다.
+						dao.req.session.profileImage = member.profileImage;
+						dao.callback(err, result);
+					});
+				}
+			});
+		}
 	},
 	
 	// 쿠폰 후기 등록
 	insertEpilogue: function(){
-		
+		this.params.regDate = new Date();	// 등록일
+		this.params.couponId = new ObjectId(this.params.couponId);
+		var dao = this;
+		db.epilogue.insert(this.params, function(err, epilogueObj){
+			// 후기 등록에 성공했을 경우
+			// 쿠폰 컬렉션의 후기 수와 만족도 합계를 업데이트 한다.
+			db.coupon.update({_id: dao.params.couponId}, {"$inc": {epilogueCount: 1}, "$inc": {satisfactionSum: parseInt(dao.params.satisfaction)}}, function(err, result){
+				DaoUtil.objectIdToString(epilogueObj);
+				dao.callback(err, epilogueObj);
+			});
+		});
 	}
 };
 

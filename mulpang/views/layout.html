@@ -9,7 +9,15 @@
 <script src="js/lib/jquery-1.9.1.js"></script>
 <script src="js/lib/jquery.tmpl.js"></script>
 <script src="js/util.js"></script>
+<script src="js/common_cart.js"></script>
+<script src="js/common_login.js"></script>
+<script src="js/common_member.js"></script>
 {{if js}}<script src="js/${js}"></script>{{/if}}
+<script>
+var userInfo = {
+	userId 			: "${userId}"
+};
+</script>
 </head>
 
 <body id="${pageId}">
@@ -34,22 +42,13 @@
 				</ul>
 			</nav>
 			<div id="member_info">
-				<h1 class="blind">로그인</h1>
-				<form id="login" name="login_form" action="#" method="post">
-					<label for="login_id">아이디</label>
-					<input type="email" id="login_id" name="_id" required placeholder="등록된 e-mail 입력">
-					<label for="login_password">비밀번호</label>
-					<input type="password" id="login_password" name="password" required placeholder="비밀번호 입력">
-					<input type="submit" value="로그인">
-				</form>
-				<a href="member_join.html" class="member_join">회원가입</a>
+				<!-- 로그인 폼 또는 회원정보 출력 영역 -->
 			</div>
 			<div id="cart" class="carton">
 				<h2 class="interest">관심쿠폰</h2>
-				<p class="interest_cnt">2</p>
+				<p class="interest_cnt">0</p>
 				<ul>
-					<li><a href="#"><img src="image/photo/coupon_01.jpg" width="48" height="28" alt="백운냉면"></a></li>
-					<li><a href="#"><img src="image/photo/coupon_03.jpg" width="48" height="28" alt="고려삼계탕"></a></li>
+					<!-- 관심쿠폰 출력 영역 -->
 				</ul>
 			</div>
 		</header>
@@ -77,3 +76,28 @@
 	</div>
 </body>
 </html>
+
+
+<!-- 실제로 브라우저가 처리하지는 않는 부분이다.(javascript도 html 도 아닌 것으로 인식한다) -->
+<!-- 로그인 안된 사용자에게 보여질 화면 -->
+<script type="text/x-jquery-tmpl" id="tmpl_login_form">
+<h1 class="blind">로그인</h1>
+<form id="login" name="login_form" action="#" method="post">
+	<label for="login_id">아이디</label>
+	<input type="email" id="login_id" name="_id" required placeholder="등록된 e-mail 입력">
+	<label for="login_password">비밀번호</label>
+	<input type="password" id="login_password" name="password" required placeholder="비밀번호 입력">
+	<input type="submit" value="로그인">
+</form>
+<a href="member_join.html" class="member_join">회원가입</a>
+</script>
+
+
+<!-- 실제로 브라우저가 처리하지는 않는 부분이다.(javascript도 html 도 아닌 것으로 인식한다) -->
+<!-- 로그인 된 사용자에게 보여질 화면 -->
+<script type="text/x-jquery-tmpl" id="tmpl_user_info">
+<h1 class="blind">회원정보</h1>
+	<img src="image/member/{%= userId %}.jpg" class="user_profile" alt="{%= userId %} 회원 이미지">
+	<a href="member_mypage.html" class="go_mypage">마이 페이지로</a>
+	<a href="logout.html" class="logout">로그아웃</a>
+</script>

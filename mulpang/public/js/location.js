@@ -49,6 +49,9 @@ function showCurrentPosition(){
 									position.coords.longitude);
 		
 		map.setCenter(here);
+//		bounds = new google.maps.LatLngBounds();
+//		bounds.contains(here);
+//		map.fitBounds();
 		
 		// 2.2. 현재 위치의 오차를 표시한다.
 		circle.setCenter(here);

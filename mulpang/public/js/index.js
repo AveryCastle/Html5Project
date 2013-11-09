@@ -7,9 +7,9 @@ $(function(){
 	// 오늘 날짜 세팅
 	$("#time > time").attr("datetime", Util.dateToString("-")).text(Util.dateToString("-"));
 	
-	getCouponList();
-	
+	getCouponList();	
 	setSlideEvent();
+
 });
 
 // 쿠폰 상세보기 이벤트와 상세보기 닫기 이벤트를 추가한다.
@@ -85,10 +85,13 @@ function detailSlide(coupon){
 // 쿠폰 상세정보를 닫는다.
 function couponPreview(coupon){
 	$('.coupon_list > article.preview.act').removeClass('coupon_off');
+	coupon.removeClass('detail').addClass('preview');
 	
-	if( coupon.hasClass('detail') ){
-		coupon.removeClass('detail').addClass('preview');
-	}	
+	// 갤러리 탭을 보여준다.
+	$(coupon.find(".gallery").removeClass("tab_off").siblings().addClass("tab_off"));
+	
+	// 상세보기나 구매페이지를 닫을 경우 상세보기와 구매페이지를 숨긴다.
+	coupon.find(".coupon_tab, .buy_section").hide();
 }
 
 
@@ -194,8 +197,8 @@ function getCouponList(){
 			setDetailEvent();
 			// 구매하기 버튼 클릭 이벤트를 추가한다.
 			setBuyFormEvent();
-			// 쿠폰 구매이벤트를 추가한다.
-			//setBuyEvent(coupon);
+			// 관심쿠폰 등록 이벤트를 추가한다.
+			setAddCartEvent();
 			
 			sliding();			
 		},
@@ -254,15 +257,17 @@ function setBuyEvent(coupon){
 		$.ajax({
 			url : "request",
 			data : params,
-			type : "get",
+			//type : "get",
+			type : "post",
 			dataType : "json",
 			success : function(data){
 				if( data == 1 ){
 					alert("쿠폰 구매가 완료되었습니다.");
+					window.location.href = "/";
 				}else{
-					alert("쿠폰 구매에 실패했습니다.");
+					alert("쿠폰 구매에 실패하였습니다.");
+					window.location.reload();
 				}
-				window.location.reload();
 			},
 			error : function(jqXHR, error, errorThrown) {  
 	            if(jqXHR.status && jqXHR.status == 400){
@@ -270,6 +275,7 @@ function setBuyEvent(coupon){
 	            }else{
 	                alert("Something went wrong");
 	            }
+	            window.location.reload();
 			}
 		});
 		
@@ -277,7 +283,3 @@ function setBuyEvent(coupon){
 		return false;
 	});
 }
-
-
-
-
