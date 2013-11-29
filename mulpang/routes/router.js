@@ -10,7 +10,8 @@ exports.index = function(req, res) {
 	res.render('index', {
 		pageId : 'today',
 		js : 'index.js',
-		userId : req.session.userId
+		userId : req.session.userId,
+		profileImage : req.session.profileImage
 	});
 };
 
@@ -32,7 +33,8 @@ exports.all = function(req, res) {
 	res.render('index', {
 		pageId : 'all',
 		js		: 'index.js',
-		userId : req.session.userId
+		userId : req.session.userId,
+		profileImage : req.session.profileImage
 	});
 };
 
@@ -48,7 +50,8 @@ exports.forward = function(req, res) {
 	pageId = pageId.substring(0, pageId.lastIndexOf("."));
 	res.render(url, {pageId: pageId
 					, js: pageId+".js"
-					, userId : req.session.userId});
+					, userId : req.session.userId
+					, profileImage : req.session.profileImage});
 };
 
 // 모든  Ajax 통신 요청시 호출할 라우터
@@ -84,8 +87,10 @@ exports.request = function(req, res){
 exports.upload = function(req,res){
 	// app.js의 bodyParser 설정에서 지정한 임시 파일 경로에서 파일명을 찾아서 응답메세지로 전달한다.
 	// 이후에 실제 회원가입이나 수정 시 임시로 만들어서 응답한 파일명이 tmpFileName 파라미터로 전달된다.
-	var tmpName = req.files.profile.path.split("\\tmp\\");
+	var tmpName = req.files.profile.path.split("\/tmp\/");
+	clog.info(tmpName);
 	tmpName = tmpName[tmpName.length-1];	// 배열의 마지막에 있는 파일명
+	clog.info('tmpName' + tmpName);
 	res.send(tmpName);
 };
 
@@ -101,6 +106,7 @@ exports.login = function(req,res){
 				res.json(err.result);
 			}else{
 				req.session.userId = result._id;
+				req.session.profileImage = result.profileImage;
 				res.json(result);
 			}
 		}

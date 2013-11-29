@@ -56,10 +56,55 @@ Dao.prototype = {
 		
 		// 검색 조건
 		var query = {};
+		var nowDate = new Date();
+
+		// 검색 조건 - 기간
+		query["saleDate.start"] = {"$lte" : nowDate};
+		switch(this.params.search_date){
+			case "buyable" : query["saleDate.finish"] = {"$gte" : nowDate}; break;
+			case "past" : query["saleDate.finish"] = {"$lt" : nowDate};	break;
+			case "all" : // nothing
+		}
+
+		// 검색 조건 - 지역
+		if(this.params.search_location && this.params.search_location != ""){
+			console.log(query["region"]);
+			query["region"] = this.params.search_location;
+		}
+
+		// 검색 조건 - 키워드
+		if(this.params.search_keyword && this.params.search_keyword != ""){
+			query["$or"] = [{couponName : new RegExp(this.params.search_keyword, "i")}, {desc : new RegExp(this.params.search_keyword, "i")}];
+			console.log(query["$or"]);
+		}
+
+		// 리스트 정렬 순서
+		var orderBy = {};
+		if( this.params.orderBy && this.params.orderBy != ""){
+			orderBy[this.params.orderBy] = -1;
+		}else{
+			orderBy = {
+				"saleDate.start" : -1,
+				"saleDate.finish" : 1
+			};
+		}
 		
-		db.coupon.find(query, resultAttr).toArray(function(err, result){
+		console.log('------------- couponList ---------------');
+		console.log(this.params);
+		console.log('search_date :' + this.params.search_date );
+		console.log('search_location :' + this.params.search_location);
+		console.log('search_keyword :' + this.params.search_keyword);
+		console.log('qyery : ' );
+		console.log(query);
+		console.log('orderBy :');
+		console.log(orderBy);
+		console.log('------------- couponList ---------------');
+				
+		db.coupon.find(query, resultAttr).sort(orderBy).toArray(function(err, result){
 			DaoUtil.objectIdToString(result);
-			dao.callback(err, result);			
+			console.log('result --------------------------');
+			console.log(result);
+			dao.callback(err, result);					
 		});		
 	},
 	

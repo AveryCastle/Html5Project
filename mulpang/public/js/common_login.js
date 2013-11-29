@@ -10,7 +10,7 @@ $(function(){
 });
 
 // 로그인
-function login(){	
+function login(){
 	var params = $(this).serialize();
 	$.ajax({
 		url			: "login",
@@ -23,6 +23,8 @@ function login(){
 						}else{
 							alert("로그인이 완료되었습니다.");
 							window.location.href = "/";
+							//userInfo.profileImage = data.profileImage;
+							//userInfo.userId = data._id;
 						}
 		},
 		error		: function(jqXHR, error, errorThrown) {  

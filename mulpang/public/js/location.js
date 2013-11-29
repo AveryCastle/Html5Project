@@ -275,13 +275,5 @@ function initSlider(){
 		if(range.val() < couponArticle.size()-1){
 			slide(parseInt(range.val())+1);
 		}
-	});	
+	});
 }
-
-
-
-
-
-
-
-

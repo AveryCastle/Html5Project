@@ -12,10 +12,12 @@
 <script src="js/common_cart.js"></script>
 <script src="js/common_login.js"></script>
 <script src="js/common_member.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 {{if js}}<script src="js/${js}"></script>{{/if}}
 <script>
 var userInfo = {
-	userId 			: "${userId}"
+	userId 			: "${userId}",
+	profileImage	: "${profileImage}"
 };
 </script>
 </head>
@@ -26,7 +28,7 @@ var userInfo = {
 		<header id="header">
 			<hgroup>
 				<h1 class="logo">
-					<img src="image/svg/logo.svg" alt="mulPang">
+					<a href="/"><img src="image/svg/logo.svg" alt="mulPang"></a>
 				</h1>
 				<h2 class="theme">
 					<img src="image/svg/logo_text.svg" alt="오늘은 뭘 파니?">
@@ -97,7 +99,7 @@ var userInfo = {
 <!-- 로그인 된 사용자에게 보여질 화면 -->
 <script type="text/x-jquery-tmpl" id="tmpl_user_info">
 <h1 class="blind">회원정보</h1>
-	<img src="image/member/{%= userId %}.jpg" class="user_profile" alt="{%= userId %} 회원 이미지">
+	<img src="image/{%= profileImage %}" class="user_profile" alt="{%= userId %} 회원 이미지">
 	<a href="member_mypage.html" class="go_mypage">마이 페이지로</a>
 	<a href="logout.html" class="logout">로그아웃</a>
 </script>

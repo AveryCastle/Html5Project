@@ -8,14 +8,14 @@ $(function(){
 	$("#time > time").attr("datetime", Util.dateToString("-")).text(Util.dateToString("-"));
 	
 	getCouponList();	
+	setSearchEvent();
+	setOrderEvent();
 	setSlideEvent();
-
 });
 
 // 쿠폰 상세보기 이벤트와 상세보기 닫기 이벤트를 추가한다.
 function setDetailEvent(){
 	$('.preview > .list_img, .preview > .detail_img').click(function(e){
-		console.log('click~~');
 		var coupon = $(e.target).parents('article');
 		couponDetail( coupon );
 	});
@@ -26,10 +26,6 @@ function setDetailEvent(){
 		}
 	});
 	
-	
-	$('.detail > section.content').click(function(){
-		console.log('detail click~~~!!!');
-	});
 	
 	$('.btn_close_coupon_detail').click(function(e){
 		var coupon = $(e.target).parents('article');
@@ -52,7 +48,6 @@ function couponDetail( coupon, forBuy ){
 				type : "get",
 				dataType : "json",
 				success : function(data){
-					console.log(data);
 					coupon.children(".content").after($("#tmpl_coupon_detail").tmpl(data));
 					// 상세보기 호출 시 탭 이벤트를 추가한다.
 					setTabEvent(coupon);
@@ -64,6 +59,14 @@ function couponDetail( coupon, forBuy ){
 					}else{ // 상세보기 용도
 						hideBuyForm(coupon);
 					}
+
+					// 로그인시 구매자 email을 미노출한다.
+					if (userInfo.userId != "") {
+						$("input[name='email']").val(userInfo.userId);
+						$("input[name='email']").attr("readonly", true);
+					}else{
+						$("input[name='email']").removeAttr("readonly");
+					};
 				}
 			});		
 	}
@@ -169,10 +172,23 @@ function setTabEvent(coupon){
 
 
 // 쿠폰 목록을 조회한다.
-function getCouponList(){
-	var params = {
-		cmd: "couponList"
-	};
+function getCouponList(param, sorting){
+	var params;
+
+	if( typeof param != 'undefined'){
+		params = param;
+		params += "&cmd=couponList";
+	}else{
+		params = {
+			cmd : "couponList"
+		};
+	}
+
+	if( typeof sorting != "undefined" ){
+		params += "&orderBy=" + sorting;
+	}
+
+	console.log(params);
 	
 	$.ajax({
 		url : "request",
@@ -180,7 +196,6 @@ function getCouponList(){
 		type : "get",
 		dataType : "json",
 		success : function(data){
-			//console.log(data);
 			var couponList = $("#tmpl_coupon_list").tmpl(data);
 			$("div.coupon_list").empty().append(couponList);
 			
@@ -253,7 +268,7 @@ function setPrice(element, price){
 function setBuyEvent(coupon){
 	coupon.find("form").submit(function(e){
 		var params = $(this).serialize();
-
+		console.log(params);
 		$.ajax({
 			url : "request",
 			data : params,
@@ -281,5 +296,21 @@ function setBuyEvent(coupon){
 		
 		// form 의 기본동작  submit을 막는다.
 		return false;
+	});
+}
+
+// 검색 이벤트
+function setSearchEvent(){
+	$("#coupon_search").submit(function(e){
+		e.preventDefault();
+		getCouponList($(this).serialize());
+	});
+}
+
+// 정렬 이벤트 
+function setOrderEvent(){
+	$("#order").submit(function(event){
+		event.preventDefault();
+		getCouponList($("#coupon_search").serialize(), $("#list_order").val());
 	});
 }
