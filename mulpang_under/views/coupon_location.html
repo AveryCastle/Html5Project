@@ -1,0 +1,43 @@
+<div id="main">
+	<section id="location_map" title="지도 표시 영역"> .....loading..... </section>
+	<section id="coupon" class="location">
+		<h1 class="blind">쿠폰 리스트</h1>
+		<div class="coupon_list">
+		<!-- 쿠폰 목록 출력 영역 -->
+					
+		</div>
+	</section>
+	<div id="location_coupon_control">
+		<div id="location_coupon_counter">
+			<span id="counter_now">0</span> / <span id="counter_all">0</span>
+		</div>
+		<button type="button" id="btn_pre_location_coupon">이전</button>
+		<input type="range" min="0" value="0"> 
+		<button type="button" id="btn_next_location_coupon">다음</button>
+	</div>
+</div>
+
+<!-- 실제로 브라우저가 처리하지는 않는 부분이다.(javascript도 html 도 아닌 것으로 인식한다) -->
+<script type="text/underscore" id="tmpl_coupon_list">
+<article class="" data-couponid="<%= _id %>" tabindex="0">
+<!-- 쿠폰 하나당 출력 영역 -->
+	<h1><%= couponName %></h1>
+	<img class="list_img" src="image/<%= image.main.file %>" alt="<%= image.main.desc %>">
+	<img class="detail_img" src="image/<%= image.detail.file %>"" alt="<%= image.detail.desc %>" title="자세한 사항은 아래내용 참조">
+	<section class="content">
+		<h1><%= couponName %></h1>
+		<p class="note">
+			<%= desc %>
+		</p>
+		<ul class="coupon_info">
+			<li class="cost">정상가격 : <del><%= Util.toCommaPrice(primeCost) %>원</del></li>
+			<li class="discount">할인가격 : <em><%= Util.toCommaPrice(price) %>원</em></li>
+			<li class="expire">유효기간 : <time datetime="<%= Util.dateToYYYYMMDD(useDate.start) %>"><%= Util.dateToYYYYMMDD(useDate.start) %></time> 부터 <time datetime="<%= Util.dateToYYYYMMDD(useDate.finish) %>"><%= Util.dateToYYYYMMDD(useDate.finish) %></time> 까지</li>
+			<li class="remain">잔여수량 : <span><%= quantity - buyQuantity %>개</span></li>
+			<li class="term">판매기간 : <span><%= Util.dateToYYYYMMDD(saleDate.finish) %>까지</span></li>
+		</ul>
+	</section>
+<!-- End of .coupon_article -->
+</article>
+
+</script>
