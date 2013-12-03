@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
-
+//app.get('/', routes.index);
 app.get('/detail.html', routes.detail);	// 1st modified
 app.get('/list.html', routes.list);	// 1st modified
 
